@@ -1,5 +1,7 @@
 #include "SelfDrivingCar.h"
 #include <iostream>
+#include <string>
+#include <vector>
 
 using namespace std;
 
@@ -43,3 +45,41 @@ void SelfDrivingCar::tick() {
 
     pos.set(pos.getX() + dx, pos.getY() + dy);
 }
+
+
+//αξιολύπητη προσπάθεια για sencors 
+struct SensorReading {
+    string type;
+    int distance;
+    int x, y; // position
+    string objectId;
+    double confidence;
+    //(auto to apokatw bgainei apo to tick to speed:)
+    int speed;
+    int direction;
+    string signText;
+    char trafficLight;
+};
+
+class Sensor {
+    protected:
+        int range;
+        int view_field;
+        int accuracy;
+    public:
+        virtual vector<SensorReading> sensorreading () = 0; 
+        virtual ~Sensor() {}
+};
+
+vector<SensorReading> LidarSensor:: sense 
+
+class LidarSensor : public Sensor {
+    public:
+        LidarSensor() {
+            range = 9;
+            view_field = 9;
+            accuracy = 0.97;
+        }
+
+        vector<SensorReading> sensorreading () override;
+};
