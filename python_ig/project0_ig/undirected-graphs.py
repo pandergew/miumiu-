@@ -15,18 +15,32 @@ def dfs(graph, start):
         if parent[u] is not None:
             tree_edges.append((parent[u], u)) 
         for v in graph[u]:
-            if v is not visited:
-                visited.add(v)
+            if v not in visited:
+                stack.append(v)
                 parent[v] = u 
             elif v != parent[u]:
                 back_edges.append((parent[u], v))
-            pass
     return tree_edges, back_edges
 
 def bfs(graph, start):
+    visited = {start}
+    parent = {start: None}
+    tree_edges = []
+    cross_edges = []
+    queue = deque([start])
 
+    while queue:
+        u = queue.popleft()
+        for v in graph[u]:
+            if v not in visited:
+                stack.append(v)
+                parent[v] = u 
+            elif v != parent[u]:
+                cross_edges.append((parent[u], v))
+    return tree_edges, cross_edges
+        
 
-if name == "main":
+if __name__ == "__main__":
     graph = {
     'A': ['B', 'C'],
     'B': ['A', 'D'],
