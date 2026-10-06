@@ -19,7 +19,7 @@ def dfs(graph, start):
         if parent[u] is not None:
             tree_edges.append((parent[u], u)) 
 
-        for v in graph[u]:
+        for v in reversed (graph[u]):
             if v not in visited:
                 #αν δεν υπάρχει το v στο visited τη βάζουμε στην στοίβα αν μπει ξανά από άλλη 
                 #κορυφή, ο parent ενημερώνεται και μετράει ο τελευταίος (αυτός που θα την επισκευθεί) 
@@ -41,6 +41,7 @@ def bfs(graph, start):
     parent = {start: None}
     tree_edges = []         #ακμές δέντρου
     cross_edges = []        #εγκαρσιες ακμές
+    recorded = set()        #ακμές που έχουν ήδη καταγραφεί ως εγκαρσιες
     queue = deque([start])
 
     while queue:
@@ -58,6 +59,7 @@ def bfs(graph, start):
                 #ήδη επισκεμμένη κορυφή που δεν είναι ο πατέρας του u: εγκάρσια ακμή.
                 #ο έλεγχος (v, u) αποφεύγει τη διπλή καταγραφή της ίδιας ακμής
                 #από τις δύο πλευρές
+                recorded.add(frozenset((u, v)))
                 cross_edges.append((u, v))
     return tree_edges, cross_edges
         
