@@ -70,5 +70,28 @@ int main(int argc, char *argv[]) {
 
     printf("Shared memory ready (p = %.2f, n = %d)\n", p, n);
 
+
+    //arxikopoihsh shmatoforwn
+    //exoume 8 deiktes ena gia kathe buffer wste meta na mporoume na tous arxikopoihsoume me ena broxo
+    struct buffer *all[8] = {
+        &sh->p1_to_enc1,
+        &sh->enc1_to_p1,
+        &sh->enc1_to_chan,
+        &sh->chan_to_enc1,
+        &sh->chan_to_enc2,
+        &sh->enc2_to_chan,
+        &sh->enc2_to_p2,
+        &sh->p2_to_enc2
+    };
+
+    for(int i = 0; i<8; i++) {
+        sem_init(&all[i]->empty, 1, 1);
+        sem_init(&all[i]->full, 1, 0);
+    }
+    //parathrhsh apo otan balame auto to kommati exoume total 4 kai oxi 0 opws prin 
+    //kai auto mas deixnei oti leitourghse kanonika to programma (auto ginetai logo tou sem_init 
+    //pou egrace tis arxikes times twn shmaforwn mesa sthn mnhmh ) 
+    //to megethos (2624) den allaje pou epishs deixnei oti douleuei swsta to programma afou exoume orisei to megethos me to ftrucate 
+
     return 0;
 }
