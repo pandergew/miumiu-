@@ -1,14 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+//shared memory
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+
 #include "common.h"
 
 
 int main(int argc, char *argv[]) {
     //pithanothta alloiwshs
-    double p = -1.0; 
+    double p = -1.0; /* arxizei apo ena giati an o xrhsths jexasei ena orisma telikos elegxos to pianei*/
     // megistos arithmos prospatheiwn 
-    int n = -1; 
+    int n = -1; /*den exei dwthei epithdes/ den exei dothei akoma*/
 
     //elegxos oti exoume tis swstes 5 times gia na trejei to programma
     if( argc != 5) {
@@ -37,6 +43,32 @@ int main(int argc, char *argv[]) {
     //printf("Hello, argc = %d\n", argc );
     //printf("p = %.2f, n = %d\n", p, n);
 
+    //apo edw kai katw prospathises na kaneis shared memory na jereis mporei na exei kapou lathos 
+    //xrhsimopioume ta onomata o-creat kai o-rdwr giati οι αριθμοι αλλάζυν ανα σύστημα 
+    //epishs to fd einai arithmos pou leitourgei san xerouli gia na mporoume na anaferomaste se auto stis epomenes kleiseis 
+    //akoma to 0666 einai ta dikaiwmata pou tha exei h mnhmh otan dhmiourghthei(oloi mporoun na grafoun kai na diabazoun)
+    int fd = shm_open(SHM_NAME, O_CREAT | O_RDWR, 0666);
+    if(fd == -1){
+        perror("shm_open fail");
+        return 1;
+    }
+
+    //arketa sigourh edw tha exei lathos giati to ftrucate tha kocei to fd analoga me to shared pou den uparxei akoma (uparxei mono se DHLWSH struct)
+    //ftruncate kanei arxeio mnhmhs pou deixnei to fd na exei to megethos tou shared (to megalwnei/mikrenei analoga)
+    if(ftruncate(fd, sizeof(struct shared)) == -1){
+        perror("ftruncate fail");
+        return 1;
+    }
+
+    //shmantikh shmeiwsh to o_rdwr orizei pws anoigeis to arxeio enw ta prot_ orizoun xartografhsh kai gia auto prepei na sumfwnoun
+    //xrhsh map_shared giati theloume na grafontai oi allages sthn koinh mnhmh kai na tis blepoume (den theloume se idiotiko xwro)
+    struct shared *sh = mmap(NULL, sizeof(struct shared), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    if(sh == MAP_FAILED){
+        perror("mmap fail");
+        return 1;
+    }
+
+    printf("Shared memory ready (p = %.2f, n = %d)\n", p, n);
 
     return 0;
 }
