@@ -23,6 +23,7 @@ struct buffer {
     sem_t full;
 };
 
+//buffer
 struct shared {
     struct buffer p1_to_enc1;
     struct buffer enc1_to_p1;
