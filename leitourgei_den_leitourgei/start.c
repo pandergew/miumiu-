@@ -35,6 +35,8 @@ int main(int argc, char *argv[]) {
     }
 
     //printf("Hello, argc = %d\n", argc );
-    printf("p = %.2f, n = %d\n", p, n);
+    //printf("p = %.2f, n = %d\n", p, n);
+
+
     return 0;
 }
