@@ -93,5 +93,9 @@ int main(int argc, char *argv[]) {
     //pou egrace tis arxikes times twn shmaforwn mesa sthn mnhmh ) 
     //to megethos (2624) den allaje pou epishs deixnei oti douleuei swsta to programma afou exoume orisei to megethos me to ftrucate 
 
+
+    strcpy(sh->p1_to_enc1.msg.text, "hello from start");
+    printf("start wrote: %s\n", sh->p1_to_enc1.msg.text);
+
     return 0;
 }
