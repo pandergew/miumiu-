@@ -3,8 +3,11 @@
 #include <string.h>
 #include <fcntl.h>
 #include <unistd.h>
+
 #include <sys/mman.h>
 #include <sys/stat.h>
+
+#include <sys/wait.h>
 
 #include "common.h"
 
@@ -34,6 +37,26 @@ int main(int argc, char *argv[]){
 
     //printf("I am P%d\n", id);
     printf("proc reads: %s\n", sh->p1_to_enc1.msg.text);
+
+    //used for storing process ids leei sto man.archlinux.org
+    pid_t pid = fork();
+    if (pid == -1){
+        perror("fork fail");
+        return 1;
+    }
+
+    if (pid == 0){
+        /* edw trwxei to paidi (tha ginei h enc1)*/
+        printf("I am ENC1, child process\n");
+        return 0;
+    }
+
+    //apo edw sunexizei o goneas
+    wait(NULL); /*mexri na teleiwsei to paidi*/
+    printf("Parent: child finished\n");
+
+    
+
     return 0;
 }
 
