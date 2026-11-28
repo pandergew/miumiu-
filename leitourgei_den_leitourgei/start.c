@@ -7,6 +7,8 @@
 #include <sys/mman.h>
 #include <sys/stat.h>
 
+#include <sys/wait.h>
+
 #include "common.h"
 
 
@@ -94,8 +96,23 @@ int main(int argc, char *argv[]) {
     //to megethos (2624) den allaje pou epishs deixnei oti douleuei swsta to programma afou exoume orisei to megethos me to ftrucate 
 
 
-    strcpy(sh->p1_to_enc1.msg.text, "hello from start");
-    printf("start wrote: %s\n", sh->p1_to_enc1.msg.text);
+    //used for storing process ids leei sto man.archlinux.org
+    pid_t pid = fork();
+    if(pid == -1){
+        perror("fork fail");
+        return 1;
+    }
+    if(pid == 0){
+        //paidi pou tha ginei h enc1
+        sem_wait(&sh->p1_to_enc1.full); /*koimatai mexri na uparjei mhnuma*/
+        printf("ENC1 received: %s\n", sh->p1_to_enc1.msg.text);
+        sem_post(&sh->p1_to_enc1.empty); /*o buffer eleutherwthhke*/
+        return 0;
+    }
+
+    //apo edw kai katw sunexizei o gonas
+    wait(NULL); /*mexri na teleiwsei to paidi*/
+    printf("Parent: child finished\n");
 
     return 0;
 }
