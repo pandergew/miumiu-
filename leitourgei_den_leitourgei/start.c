@@ -149,6 +149,35 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
+    //prepei to 3o paidi prin ton gonea (gitai o goneas eipame exei wait)
+    pid_t pid3 = fork();
+    if(pid3 == -1){
+        perror("fail fork (pid3)");
+        return 1;
+    }
+    if(pid3 == 0){
+        //pali to idio me tis alles duo fores + kai to testing 
+        sem_wait(&sh->chan_to_enc2.full);
+        struct message m = sh->chan_to_enc2.msg;
+        sem_post(&sh->chan_to_enc2.empty);
+
+        char cs[MAX_CHECKSUM + 1];
+        sprintf(cs, "%08x", hash(m.text));
+
+        if(strcmp(cs, m.checksum) == 0){
+            printf("ENC2: ok, message accepted: %s\n", m.text);
+            
+            sem_wait(&sh->chan_to_enc2.empty);
+            sh->enc2_to_p2.msg = m;
+            sem_post(&sh->enc2_to_p2.full);
+        }
+        else{
+            printf("ENC2: checksum mismatch would send NACK\n");
+        }
+        return 0;
+    }
+
+
     //apo edw kai katw sunexizei o gonas
 
     pid_t pid2 = fork();
@@ -174,6 +203,8 @@ int main(int argc, char *argv[]) {
 
     }
 
+
+    wait(NULL); /*trith fora*/
     wait(NULL); /*deuterh fora*/
     wait(NULL); /*mexri na teleiwsei to paidi*/
     printf("Parent: child finished\n");
